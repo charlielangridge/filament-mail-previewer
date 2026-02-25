@@ -1,32 +1,31 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "charlielangridge/filament-mail-previewer",
+    "description": "Filament Mail Previewer - allows you to preview mailables and notifications in Filament",
     "keywords": [
-        ":vendor_name",
+        "charlielangridge",
         "laravel",
         "filamentphp",
         "filament",
         "filament-plugin",
-        ":package_slug"
+        "filament-mail-previewer"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/charlielangridge/filament-mail-previewer",
     "support": {
-        "issues": "https://github.com/:vendor_slug/:package_slug/issues",
-        "source": "https://github.com/:vendor_slug/:package_slug"
+        "issues": "https://github.com/charlielangridge/filament-mail-previewer/issues",
+        "source": "https://github.com/charlielangridge/filament-mail-previewer"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Charlie Langridge",
+            "email": "charlie@charlielangridge.com",
             "role": "Developer"
         }
     ],
     "require": {
+        "charlielangridge/laravel-mail-previewer": "^0.1.0",
         "php": "^8.2",
         "filament/filament": "^5.0",
-        "filament/forms": "^5.0",
-        "filament/tables": "^5.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
@@ -43,13 +42,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "CharlieLangridge\\FilamentMailPreviewer\\": "src/",
+            "CharlieLangridge\\FilamentMailPreviewer\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "CharlieLangridge\\FilamentMailPreviewer\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -64,10 +63,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "CharlieLangridge\\FilamentMailPreviewer\\FilamentMailPreviewerServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "FilamentMailPreviewer": "CharlieLangridge\\FilamentMailPreviewer\\Facades\\FilamentMailPreviewer"
             }
         }
     },

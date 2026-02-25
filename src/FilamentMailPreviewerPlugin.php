@@ -1,20 +1,25 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace CharlieLangridge\FilamentMailPreviewer;
 
+use CharlieLangridge\FilamentMailPreviewer\Pages\MailPreviewerPage;
+use CharlieLangridge\FilamentMailPreviewer\Pages\PreviewMailPage;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class SkeletonPlugin implements Plugin
+class FilamentMailPreviewerPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'skeleton';
+        return 'filament-mail-previewer';
     }
 
     public function register(Panel $panel): void
     {
-        //
+        $panel->pages([
+            MailPreviewerPage::class,
+            PreviewMailPage::class,
+        ]);
     }
 
     public function boot(Panel $panel): void

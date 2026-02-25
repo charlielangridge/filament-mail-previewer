@@ -1,70 +1,121 @@
-# :package_description
+# Filament Mail Previewer
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/charlielangridge/filament-mail-previewer.svg?style=flat-square)](https://packagist.org/packages/charlielangridge/filament-mail-previewer)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/charlielangridge/filament-mail-previewer/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/charlielangridge/filament-mail-previewer/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/charlielangridge/filament-mail-previewer/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/charlielangridge/filament-mail-previewer/actions?query=workflow%3A%22Fix+PHP+code+styling%22+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/charlielangridge/filament-mail-previewer.svg?style=flat-square)](https://packagist.org/packages/charlielangridge/filament-mail-previewer)
 
-<!--delete-->
----
-This repo can be used to scaffold a Filament plugin. Follow these steps to get started:
+Filament Mail Previewer adds a Filament page that discovers your app mailables and notifications, asks for any required constructor inputs, and renders the email HTML side-by-side in desktop and mobile frames.
 
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Make something great!
----
-<!--/delete-->
+It uses [`charlielangridge/laravel-mail-previewer`](https://packagist.org/packages/charlielangridge/laravel-mail-previewer) under the hood to discover classes and render previews.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Requirements
+
+- PHP `^8.2`
+- Laravel app with Filament `^5.0`
+- A Filament panel where you can register plugins
 
 ## Installation
 
-You can install the package via composer:
+Install the package:
 
 ```bash
-composer require :vendor_slug/:package_slug
+composer require charlielangridge/filament-mail-previewer
 ```
 
-> [!IMPORTANT]
-> If you have not set up a custom theme and are using Filament Panels follow the instructions in the [Filament Docs](https://filamentphp.com/docs/4.x/styling/overview#creating-a-custom-theme) first.
+The package auto-discovers its service provider.
 
-After setting up a custom theme add the plugin's views to your theme css file or your app's css file if using the standalone packages.
+## Register The Plugin In Your Filament Panel
+
+Add the plugin to your panel provider (example: `app/Providers/Filament/AdminPanelProvider.php`):
+
+```php
+use CharlieLangridge\FilamentMailPreviewer\FilamentMailPreviewerPlugin;
+use Filament\Panel;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->plugins([
+            FilamentMailPreviewerPlugin::make(),
+        ]);
+}
+```
+
+This registers:
+
+- a navigation page: `Mail Previewer`
+- a preview page used after selecting a mailable/notification
+
+## Filament Theme Setup (Important)
+
+If you are using a custom Filament theme, include this package's Blade files in your Tailwind content sources so page styles/classes are picked up:
 
 ```css
-@source '../../../../vendor/:vendor_slug/:package_slug/resources/**/*.blade.php';
+@source '../../../../vendor/charlielangridge/filament-mail-previewer/resources/**/*.blade.php';
 ```
 
-You can publish and run the migrations with:
+Then rebuild your assets.
+
+If you have not created a custom Filament theme yet, follow the Filament docs first:
+
+- https://filamentphp.com/docs/4.x/styling/overview#creating-a-custom-theme
+
+## Optional Configuration
+
+Publish config if you want to override the facade class used to talk to the underlying Laravel mail previewer package:
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-migrations"
-php artisan migrate
+php artisan vendor:publish --tag="filament-mail-previewer-config"
 ```
 
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag=":package_slug-config"
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag=":package_slug-views"
-```
-
-This is the contents of the published config file:
+Published config:
 
 ```php
 return [
+    'laravel_mail_previewer_facade' => \Charlielangridge\LaravelMailPreviewer\Facades\LaravelMailPreviewer::class,
 ];
 ```
 
+In most apps you do not need to change this.
+
 ## Usage
 
-```php
-$variable = new VendorName\Skeleton();
-echo $variable->echoPhrase('Hello, VendorName!');
+1. Open your Filament panel.
+2. Go to `Mail Previewer` in navigation.
+3. Select a mailable or notification row and click `Preview`.
+4. Fill required inputs in the modal.
+5. Submit to open the rendered email preview page.
+
+The preview page shows:
+
+- desktop frame
+- mobile frame
+- heading + resolved subject
+
+## How Inputs Are Handled
+
+The plugin automatically builds a form from discovered constructor/input requirements:
+
+- `model` inputs become searchable selects
+- `array` inputs are entered as JSON
+- `integer` inputs are numeric fields
+- fields with `date` in the name become date pickers
+- other values are captured in textareas
+
+For notifications, a `notifiable` model input is added automatically when possible (usually defaults to the authenticated user in the modal).
+
+## Troubleshooting
+
+If the table is empty or you see the install notice:
+
+- ensure `charlielangridge/laravel-mail-previewer` is installed (it is a dependency of this plugin)
+- ensure your mailables/notifications are discoverable in your app
+- clear caches and reload:
+
+```bash
+php artisan optimize:clear
 ```
 
 ## Testing
@@ -75,21 +126,21 @@ composer test
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Contributing
 
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
+See [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
-## Security Vulnerabilities
+## Security
 
-Please review [our security policy](.github/SECURITY.md) on how to report security vulnerabilities.
+See [.github/SECURITY.md](.github/SECURITY.md).
 
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
+- [Charlie Langridge](https://github.com/charlielangridge)
 - [All Contributors](../../contributors)
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+MIT. See [LICENSE.md](LICENSE.md).
