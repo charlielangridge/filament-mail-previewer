@@ -11,7 +11,7 @@ It uses [`charlielangridge/laravel-mail-previewer`](https://packagist.org/packag
 
 ## Requirements
 
-- PHP `^8.2`
+- PHP `^8.3`
 - Laravel app with Filament `^5.0`
 - A Filament panel where you can register plugins
 
