@@ -3,6 +3,7 @@
 namespace CharlieLangridge\FilamentMailPreviewer\Pages;
 
 use CharlieLangridge\FilamentMailPreviewer\Support\LaravelMailPreviewerClient;
+use CharlieLangridge\FilamentMailPreviewer\Support\MailPreviewerAuthorization;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\CodeEditor\Enums\Language;
@@ -36,6 +37,11 @@ class MailPreviewerPage extends Page implements HasTable
     protected static ?int $navigationSort = 80;
 
     protected string $view = 'filament-mail-previewer::pages.mail-previewer';
+
+    public static function canAccess(): bool
+    {
+        return MailPreviewerAuthorization::canAccess();
+    }
 
     public function table(Table $table): Table
     {

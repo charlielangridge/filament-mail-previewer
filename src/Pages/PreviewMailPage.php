@@ -2,6 +2,7 @@
 
 namespace CharlieLangridge\FilamentMailPreviewer\Pages;
 
+use CharlieLangridge\FilamentMailPreviewer\Support\MailPreviewerAuthorization;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -17,6 +18,11 @@ class PreviewMailPage extends Page
      * @var array<string, mixed>
      */
     public array $preview = [];
+
+    public static function canAccess(): bool
+    {
+        return MailPreviewerAuthorization::canAccess();
+    }
 
     public function mount(): void
     {

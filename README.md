@@ -75,10 +75,87 @@ Published config:
 ```php
 return [
     'laravel_mail_previewer_facade' => \Charlielangridge\LaravelMailPreviewer\Facades\LaravelMailPreviewer::class,
+    'authorization' => [
+        'mode' => 'none',
+        'gate_ability' => 'viewFilamentMailPreviewer',
+        'policy' => [
+            'model' => null,
+            'ability' => 'viewAny',
+        ],
+        'callback' => null,
+    ],
 ];
 ```
 
 In most apps you do not need to change this.
+
+## Authorization (Optional)
+
+By default, access is open to users who can access your panel (`authorization.mode = none`).
+
+You can restrict the plugin using one of the following approaches.
+
+### Gate-based authorization
+
+Set:
+
+```php
+'authorization' => [
+    'mode' => 'gate',
+    'gate_ability' => 'viewFilamentMailPreviewer',
+],
+```
+
+Then define the gate in your app (example in `AuthServiceProvider`):
+
+```php
+Gate::define('viewFilamentMailPreviewer', fn (User $user): bool => $user->is_admin);
+```
+
+### Policy-based authorization
+
+Set:
+
+```php
+'authorization' => [
+    'mode' => 'policy',
+    'policy' => [
+        'model' => \App\Support\MailPreviewerAccess::class,
+        'ability' => 'viewAny',
+    ],
+],
+```
+
+Then register a policy for that model and implement the ability:
+
+```php
+class MailPreviewerAccessPolicy
+{
+    public function viewAny(User $user): bool
+    {
+        return $user->is_admin;
+    }
+}
+```
+
+### Callback authorization
+
+Use a config callback:
+
+```php
+'authorization' => [
+    'callback' => fn (?Authenticatable $user): bool => (bool) $user?->is_admin,
+],
+```
+
+Or define it directly in your panel plugin registration:
+
+```php
+FilamentMailPreviewerPlugin::make()
+    ->authorizeUsing(fn (?Authenticatable $user): bool => (bool) $user?->is_admin);
+```
+
+When a callback is set, it takes precedence over `mode`.
 
 ## Usage
 
@@ -139,7 +216,6 @@ See [.github/SECURITY.md](.github/SECURITY.md).
 ## Credits
 
 - [Charlie Langridge](https://github.com/charlielangridge)
-- [All Contributors](../../contributors)
 
 ## License
 
