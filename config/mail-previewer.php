@@ -1,8 +1,10 @@
 <?php
 
+use Charlielangridge\LaravelMailPreviewer\Facades\LaravelMailPreviewer;
+
 // config for charlielangridge/FilamentMailPreviewer
 return [
-    'laravel_mail_previewer_facade' => \Charlielangridge\LaravelMailPreviewer\Facades\LaravelMailPreviewer::class,
+    'laravel_mail_previewer_facade' => LaravelMailPreviewer::class,
 
     'authorization' => [
         'mode' => 'none',

@@ -39,10 +39,8 @@ class FilamentMailPreviewerServiceProvider extends PackageServiceProvider
                     ->askToStarRepoOnGitHub('charlielangridge/filament-mail-previewer');
             });
 
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
+        if (file_exists($package->basePath('/../config/mail-previewer.php'))) {
+            $package->hasConfigFile('mail-previewer');
         }
 
         if (file_exists($package->basePath('/../database/migrations'))) {

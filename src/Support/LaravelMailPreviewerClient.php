@@ -2,6 +2,7 @@
 
 namespace CharlieLangridge\FilamentMailPreviewer\Support;
 
+use Charlielangridge\LaravelMailPreviewer\Facades\LaravelMailPreviewer;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\Mailable;
@@ -403,9 +404,10 @@ class LaravelMailPreviewerClient
 
     protected function resolveFacadeClass(): string
     {
-        return (string) config(
-            'filament-mail-previewer.laravel_mail_previewer_facade',
-            \Charlielangridge\LaravelMailPreviewer\Facades\LaravelMailPreviewer::class,
+        return (string) (
+            config('mail-previewer.laravel_mail_previewer_facade')
+            ?? config('filament-mail-previewer.laravel_mail_previewer_facade')
+            ?? LaravelMailPreviewer::class
         );
     }
 

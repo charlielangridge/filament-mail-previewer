@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\CodeEditor;
 use Filament\Forms\Components\CodeEditor\Enums\Language;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -140,7 +141,7 @@ class MailPreviewerPage extends Page implements HasTable
     }
 
     /**
-     * @return array<int, \Filament\Forms\Components\Field>
+     * @return array<int, Field>
      */
     protected function getInputSchemaForPreviewable(array $previewable): array
     {
@@ -149,7 +150,7 @@ class MailPreviewerPage extends Page implements HasTable
         }
 
         return collect($this->getClient()->getInputRequirements($previewable))
-            ->map(fn (array $requirement): \Filament\Forms\Components\Field => $this->buildInputComponent($requirement))
+            ->map(fn (array $requirement): Field => $this->buildInputComponent($requirement))
             ->all();
     }
 
@@ -181,7 +182,7 @@ class MailPreviewerPage extends Page implements HasTable
     /**
      * @param  array<string, mixed>  $requirement
      */
-    protected function buildInputComponent(array $requirement): \Filament\Forms\Components\Field
+    protected function buildInputComponent(array $requirement): Field
     {
         $name = (string) ($requirement['name'] ?? $requirement['key'] ?? 'input');
         $path = "inputs.{$name}";
